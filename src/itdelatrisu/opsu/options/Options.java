@@ -1597,7 +1597,7 @@ public class Options {
 				String name = line.substring(0, index).trim();
 				GameOption option = optionMap.get(name);
 				if (option != null) {
-					extracted(line, index, option);
+					readingOption(line, index, option);
 				}
 			}
 		} catch (IOException e) {
@@ -1605,7 +1605,7 @@ public class Options {
 		}
 	}
 
-	private static void extracted(String line, int index, GameOption option) {
+	private static void readingOption(String line, int index, GameOption option) {
 		try {
 			String value = line.substring(index + 1).trim();
 			option.read(value);
