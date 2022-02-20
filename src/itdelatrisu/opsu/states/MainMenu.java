@@ -33,37 +33,30 @@ import itdelatrisu.opsu.options.OptionGroup;
 import itdelatrisu.opsu.options.Options;
 import itdelatrisu.opsu.options.OptionsOverlay;
 import itdelatrisu.opsu.states.ButtonMenu.MenuState;
-import itdelatrisu.opsu.ui.Colors;
-import itdelatrisu.opsu.ui.Fonts;
-import itdelatrisu.opsu.ui.MenuButton;
+import itdelatrisu.opsu.ui.*;
 import itdelatrisu.opsu.ui.MenuButton.Expand;
 import itdelatrisu.opsu.ui.NotificationManager.NotificationListener;
-import itdelatrisu.opsu.ui.StarFountain;
-import itdelatrisu.opsu.ui.UI;
 import itdelatrisu.opsu.ui.animations.AnimatedValue;
 import itdelatrisu.opsu.ui.animations.AnimationEquation;
 import itdelatrisu.opsu.user.UserButton;
 import itdelatrisu.opsu.user.UserList;
 import itdelatrisu.opsu.user.UserSelectOverlay;
-
-import java.awt.Desktop;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Stack;
-
 import org.newdawn.slick.Color;
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
+import org.newdawn.slick.*;
 import org.newdawn.slick.fills.GradientFill;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.state.transition.EasedFadeOutTransition;
 import org.newdawn.slick.state.transition.FadeInTransition;
+
+import java.awt.*;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Stack;
 
 /**
  * "Main Menu" state.
@@ -459,7 +452,7 @@ public class MainMenu extends BasicGameState {
 			textAlpha = 1f;
 		else if (logoState == LogoState.OPENING)
 			textAlpha = logoOpen.getEquation().calc((float) logoOpen.getTime() / logoOpen.getDuration());
-		else //if (logoState == LogoState.CLOSING)
+		else
 			textAlpha = 1f - logoClose.getEquation().calc(Math.min(logoClose.getTime() * 2f / logoClose.getDuration(), 1f));
 		float oldWhiteAlpha = Colors.WHITE_FADE.a;
 		Colors.WHITE_FADE.a = textAlpha;
@@ -679,7 +672,21 @@ public class MainMenu extends BasicGameState {
 		starFountain.clear();
 
 		// reset button hover states if mouse is not currently hovering over the button
-		int mouseX = input.getMouseX(), mouseY = input.getMouseY();
+		resetingHover();
+
+		// reset overlays
+		optionsOverlay.deactivate();
+		optionsOverlay.reset();
+		showOptionsOverlay = false;
+		optionsOverlayProgress.setTime(optionsOverlayProgress.getDuration());
+		userOverlay.deactivate();
+		showUserOverlay = false;
+		userOverlayProgress.setTime(userOverlayProgress.getDuration());
+	}
+
+	private void resetingHover() {
+		int mouseX = input.getMouseX();
+		int mouseY = input.getMouseY();
 		if (!logo.contains(mouseX, mouseY, 0.25f))
 			logo.resetHover();
 		if (!playButton.contains(mouseX, mouseY, 0.25f))
@@ -702,15 +709,6 @@ public class MainMenu extends BasicGameState {
 			downloadsButton.resetHover();
 		if (!userButton.contains(mouseX, mouseY))
 			userButton.resetHover();
-
-		// reset overlays
-		optionsOverlay.deactivate();
-		optionsOverlay.reset();
-		showOptionsOverlay = false;
-		optionsOverlayProgress.setTime(optionsOverlayProgress.getDuration());
-		userOverlay.deactivate();
-		showUserOverlay = false;
-		userOverlayProgress.setTime(userOverlayProgress.getDuration());
 	}
 
 	@Override
