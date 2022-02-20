@@ -20,17 +20,12 @@ package itdelatrisu.opsu.skins;
 
 import itdelatrisu.opsu.ErrorHandler;
 import itdelatrisu.opsu.Utils;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.LinkedList;
-
 import org.newdawn.slick.Color;
 import org.newdawn.slick.util.Log;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Loads skin configuration files.
@@ -88,79 +83,7 @@ public class SkinLoader {
 							break;
 						if ((tokens = tokenize(line)) == null)
 							continue;
-						try {
-							switch (tokens[0]) {
-							case "Name":
-								skin.name = tokens[1];
-								break;
-							case "Author":
-								skin.author = tokens[1];
-								break;
-							case "Version":
-								if (tokens[1].equalsIgnoreCase("latest"))
-									skin.version = Skin.LATEST_VERSION;
-								else
-									skin.version = Float.parseFloat(tokens[1]);
-								break;
-							case "SliderBallFlip":
-								skin.sliderBallFlip = Utils.parseBoolean(tokens[1]);
-								break;
-							case "CursorRotate":
-								skin.cursorRotate = Utils.parseBoolean(tokens[1]);
-								break;
-							case "CursorExpand":
-								skin.cursorExpand = Utils.parseBoolean(tokens[1]);
-								break;
-							case "CursorCentre":
-								skin.cursorCentre = Utils.parseBoolean(tokens[1]);
-								break;
-							case "SliderBallFrames":
-								skin.sliderBallFrames = Integer.parseInt(tokens[1]);
-								break;
-							case "HitCircleOverlayAboveNumber":
-								skin.hitCircleOverlayAboveNumber = Utils.parseBoolean(tokens[1]);
-								break;
-							case "spinnerFrequencyModulate":
-								skin.spinnerFrequencyModulate = Utils.parseBoolean(tokens[1]);
-								break;
-							case "LayeredHitSounds":
-								skin.layeredHitSounds = Utils.parseBoolean(tokens[1]);
-								break;
-							case "SpinnerFadePlayfield":
-								skin.spinnerFadePlayfield = Utils.parseBoolean(tokens[1]);
-								break;
-							case "SpinnerNoBlink":
-								skin.spinnerNoBlink = Utils.parseBoolean(tokens[1]);
-								break;
-							case "AllowSliderBallTint":
-								skin.allowSliderBallTint = Utils.parseBoolean(tokens[1]);
-								break;
-							case "AnimationFramerate":
-								skin.animationFramerate = Integer.parseInt(tokens[1]);
-								break;
-							case "CursorTrailRotate":
-								skin.cursorTrailRotate = Utils.parseBoolean(tokens[1]);
-								break;
-							case "CustomComboBurstSounds":
-								String[] split = tokens[1].split(",");
-								int[] customComboBurstSounds = new int[split.length];
-								for (int i = 0; i < split.length; i++)
-									customComboBurstSounds[i] = Integer.parseInt(split[i]);
-								skin.customComboBurstSounds = customComboBurstSounds;
-								break;
-							case "ComboBurstRandom":
-								skin.comboBurstRandom = Utils.parseBoolean(tokens[1]);
-								break;
-							case "SliderStyle":
-								skin.sliderStyle = Byte.parseByte(tokens[1]);
-								break;
-							default:
-								break;
-							}
-						} catch (Exception e) {
-							Log.warn(String.format("Failed to read line '%s' for file '%s'.",
-									line, skinFile.getAbsolutePath()), e);
-						}
+						skinChecking(skinFile, skin, line, tokens);
 					}
 					break;
 				case "[Colours]":
@@ -274,6 +197,82 @@ public class SkinLoader {
 		}
 
 		return skin;
+	}
+
+	private static void skinChecking(File skinFile, Skin skin, String line, String[] tokens) {
+		try {
+			switch (tokens[0]) {
+			case "Name":
+				skin.name = tokens[1];
+				break;
+			case "Author":
+				skin.author = tokens[1];
+				break;
+			case "Version":
+				if (tokens[1].equalsIgnoreCase("latest"))
+					skin.version = Skin.LATEST_VERSION;
+				else
+					skin.version = Float.parseFloat(tokens[1]);
+				break;
+			case "SliderBallFlip":
+				skin.sliderBallFlip = Utils.parseBoolean(tokens[1]);
+				break;
+			case "CursorRotate":
+				skin.cursorRotate = Utils.parseBoolean(tokens[1]);
+				break;
+			case "CursorExpand":
+				skin.cursorExpand = Utils.parseBoolean(tokens[1]);
+				break;
+			case "CursorCentre":
+				skin.cursorCentre = Utils.parseBoolean(tokens[1]);
+				break;
+			case "SliderBallFrames":
+				skin.sliderBallFrames = Integer.parseInt(tokens[1]);
+				break;
+			case "HitCircleOverlayAboveNumber":
+				skin.hitCircleOverlayAboveNumber = Utils.parseBoolean(tokens[1]);
+				break;
+			case "spinnerFrequencyModulate":
+				skin.spinnerFrequencyModulate = Utils.parseBoolean(tokens[1]);
+				break;
+			case "LayeredHitSounds":
+				skin.layeredHitSounds = Utils.parseBoolean(tokens[1]);
+				break;
+			case "SpinnerFadePlayfield":
+				skin.spinnerFadePlayfield = Utils.parseBoolean(tokens[1]);
+				break;
+			case "SpinnerNoBlink":
+				skin.spinnerNoBlink = Utils.parseBoolean(tokens[1]);
+				break;
+			case "AllowSliderBallTint":
+				skin.allowSliderBallTint = Utils.parseBoolean(tokens[1]);
+				break;
+			case "AnimationFramerate":
+				skin.animationFramerate = Integer.parseInt(tokens[1]);
+				break;
+			case "CursorTrailRotate":
+				skin.cursorTrailRotate = Utils.parseBoolean(tokens[1]);
+				break;
+			case "CustomComboBurstSounds":
+				String[] split = tokens[1].split(",");
+				int[] customComboBurstSounds = new int[split.length];
+				for (int i = 0; i < split.length; i++)
+					customComboBurstSounds[i] = Integer.parseInt(split[i]);
+				skin.customComboBurstSounds = customComboBurstSounds;
+				break;
+			case "ComboBurstRandom":
+				skin.comboBurstRandom = Utils.parseBoolean(tokens[1]);
+				break;
+			case "SliderStyle":
+				skin.sliderStyle = Byte.parseByte(tokens[1]);
+				break;
+			default:
+				break;
+			}
+		} catch (Exception e) {
+			Log.warn(String.format("Failed to read line '%s' for file '%s'.",
+					line, skinFile.getAbsolutePath()), e);
+		}
 	}
 
 	/**
