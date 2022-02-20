@@ -18,11 +18,10 @@
 
 package itdelatrisu.opsu.options;
 
-import itdelatrisu.opsu.Container;
-import itdelatrisu.opsu.ErrorHandler;
-import itdelatrisu.opsu.GameImage;
-import itdelatrisu.opsu.OpsuConstants;
-import itdelatrisu.opsu.Utils;
+import com.sun.jna.platform.win32.Advapi32Util;
+import com.sun.jna.platform.win32.Win32Exception;
+import com.sun.jna.platform.win32.WinReg;
+import itdelatrisu.opsu.*;
 import itdelatrisu.opsu.audio.MusicController;
 import itdelatrisu.opsu.beatmap.Beatmap;
 import itdelatrisu.opsu.beatmap.TimingPoint;
@@ -30,27 +29,6 @@ import itdelatrisu.opsu.skins.Skin;
 import itdelatrisu.opsu.skins.SkinLoader;
 import itdelatrisu.opsu.ui.Fonts;
 import itdelatrisu.opsu.ui.UI;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
-import java.util.jar.Attributes;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
@@ -64,9 +42,15 @@ import org.newdawn.slick.util.FileSystemLocation;
 import org.newdawn.slick.util.Log;
 import org.newdawn.slick.util.ResourceLoader;
 
-import com.sun.jna.platform.win32.Advapi32Util;
-import com.sun.jna.platform.win32.Win32Exception;
-import com.sun.jna.platform.win32.WinReg;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.jar.Attributes;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Handles all user options.
@@ -1613,16 +1597,20 @@ public class Options {
 				String name = line.substring(0, index).trim();
 				GameOption option = optionMap.get(name);
 				if (option != null) {
-					try {
-						String value = line.substring(index + 1).trim();
-						option.read(value);
-					} catch (NumberFormatException e) {
-						Log.warn(String.format("Format error in options file for line: '%s'.", line), e);
-					}
+					extracted(line, index, option);
 				}
 			}
 		} catch (IOException e) {
 			ErrorHandler.error(String.format("Failed to read file '%s'.", OPTIONS_FILE.getAbsolutePath()), e, false);
+		}
+	}
+
+	private static void extracted(String line, int index, GameOption option) {
+		try {
+			String value = line.substring(index + 1).trim();
+			option.read(value);
+		} catch (NumberFormatException e) {
+			Log.warn(String.format("Format error in options file for line: '%s'.", line), e);
 		}
 	}
 
