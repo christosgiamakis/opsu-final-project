@@ -36,20 +36,14 @@ import itdelatrisu.opsu.ui.Fonts;
 import itdelatrisu.opsu.ui.UI;
 import itdelatrisu.opsu.ui.animations.AnimationEquation;
 import itdelatrisu.opsu.user.UserList;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.LinkedBlockingDeque;
-
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+
+import java.io.File;
+import java.util.*;
+import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * Holds game data and renders all related elements.
@@ -719,8 +713,7 @@ public class GameData {
 		if (!breakPeriod && !relaxAutoPilot) {
 			// scorebar
 			float healthRatio = health.getHealthDisplay() / 100f;
-			if (firstObject) {  // gradually move ki before map begins
-				if (firstObjectTime >= 1500 && trackPosition < firstObjectTime - 500)
+			if (firstObject && (firstObjectTime >= 1500 && trackPosition < firstObjectTime - 500)) {  // gradually move ki before map begins
 					healthRatio = (float) trackPosition / (firstObjectTime - 500);
 			}
 			Image scorebar = GameImage.SCOREBAR_BG.getImage();
